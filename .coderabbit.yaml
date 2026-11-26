@@ -1,0 +1,36 @@
+# yaml-language-server: $schema=https://coderabbit.ai/integrations/schema.v2.json
+# CodeRabbit 설정 (V2) - https://docs.coderabbit.ai/reference/configuration
+
+language: "ko-KR"
+
+tone_instructions: "팀원 모두 공부 중인 프로젝트입니다. 지적할 때는 왜 문제인지 개념과 이유를 함께 설명하고, 가능하면 개선 예시 코드를 보여주세요."
+
+reviews:
+  profile: "chill"
+  high_level_summary: true
+  poem: false
+  in_progress_fortune: false
+
+  auto_review:
+    enabled: true
+    drafts: false
+    base_branches:
+      - "^develop$"
+
+  path_filters:
+    - "!package-lock.json"
+    - "!dist/**"
+
+  path_instructions:
+    - path: "src/**/*.{ts,tsx}"
+      instructions: |
+        - React 19 + TypeScript 프로젝트입니다. any 사용과 불필요한 타입 단언(as)을 지적해주세요.
+        - 훅 규칙(컴포넌트/커스텀 훅 최상단에서만 호출) 위반을 확인해주세요.
+    - path: "src/api/**"
+      instructions: |
+        - Access Token은 메모리(Zustand)에만, Refresh Token은 HttpOnly 쿠키로만 다룹니다.
+          localStorage/sessionStorage에 토큰을 저장하는 코드는 반드시 지적해주세요.
+        - axios 인터셉터에서 무한 재시도 루프나 동시 요청 시 토큰 재발급 중복 호출이 없는지 확인해주세요.
+    - path: "src/stores/**"
+      instructions: |
+        - Zustand store입니다. 컴포넌트에서는 selector로 필요한 값만 구독하는지 확인해주세요.
