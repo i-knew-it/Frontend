@@ -17,6 +17,21 @@ reviews:
     base_branches:
       - "^develop$"
 
+  pre_merge_checks:
+    title:
+      mode: "warning"
+      requirements: |
+        제목은 "타입: 설명" 형식이어야 합니다. (예: "feat: 이메일 로그인 구현")
+        타입은 feat, fix, refactor, style, chore, docs 중 하나이고, 콜론 뒤에 한 칸 띄웁니다.
+    description:
+      mode: "off"
+    custom_checks:
+      - name: "PR 템플릿 준수"
+        mode: "warning"
+        instructions: |
+          PR 설명에 "## 작업 내용"과 "## 관련 일정" 섹션이 있고, "작업 내용"에 실제 내용이 한 줄 이상 적혀 있으면 통과입니다.
+          "## 참고 사항"은 선택이므로 비어 있어도 됩니다.
+
   path_filters:
     - "!package-lock.json"
     - "!dist/**"
