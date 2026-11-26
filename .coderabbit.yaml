@@ -1,0 +1,51 @@
+# yaml-language-server: $schema=https://coderabbit.ai/integrations/schema.v2.json
+# CodeRabbit 설정 (V2) - https://docs.coderabbit.ai/reference/configuration
+
+language: "ko-KR"
+
+tone_instructions: "팀원 모두 공부 중인 프로젝트입니다. 지적할 때는 왜 문제인지 개념과 이유를 함께 설명하고, 가능하면 개선 예시 코드를 보여주세요."
+
+reviews:
+  profile: "chill"
+  high_level_summary: true
+  poem: false
+  in_progress_fortune: false
+
+  auto_review:
+    enabled: true
+    drafts: false
+    base_branches:
+      - "^develop$"
+
+  pre_merge_checks:
+    title:
+      mode: "warning"
+      requirements: |
+        제목은 "타입: 설명" 형식이어야 합니다. (예: "feat: 이메일 로그인 구현")
+        타입은 feat, fix, refactor, style, chore, docs 중 하나이고, 콜론 뒤에 한 칸 띄웁니다.
+    description:
+      mode: "off"
+    custom_checks:
+      - name: "PR 템플릿 준수"
+        mode: "warning"
+        instructions: |
+          PR 설명에 "## 작업 내용"과 "## 관련 일정" 섹션이 있고, "작업 내용"에 실제 내용이 한 줄 이상 적혀 있으면 통과입니다.
+          "## 참고 사항"은 선택이므로 비어 있어도 됩니다.
+
+  path_filters:
+    - "!package-lock.json"
+    - "!dist/**"
+
+  path_instructions:
+    - path: "src/**/*.{ts,tsx}"
+      instructions: |
+        - React 19 + TypeScript 프로젝트입니다. any 사용과 불필요한 타입 단언(as)을 지적해주세요.
+        - 훅 규칙(컴포넌트/커스텀 훅 최상단에서만 호출) 위반을 확인해주세요.
+    - path: "src/api/**"
+      instructions: |
+        - Access Token은 메모리(Zustand)에만, Refresh Token은 HttpOnly 쿠키로만 다룹니다.
+          localStorage/sessionStorage에 토큰을 저장하는 코드는 반드시 지적해주세요.
+        - axios 인터셉터에서 무한 재시도 루프나 동시 요청 시 토큰 재발급 중복 호출이 없는지 확인해주세요.
+    - path: "src/stores/**"
+      instructions: |
+        - Zustand store입니다. 컴포넌트에서는 selector로 필요한 값만 구독하는지 확인해주세요.
