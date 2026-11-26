@@ -1,12 +1,5 @@
 import axios from 'axios'
-
-let accessToken: string | null = null
-
-export const tokenStore = {
-  get: () => accessToken,
-  set: (token: string) => { accessToken = token },
-  clear: () => { accessToken = null },
-}
+import { useAuthStore } from '@/stores/authStore'
 
 export const apiClient = axios.create({
   baseURL: import.meta.env.VITE_API_BASE_URL,
@@ -14,7 +7,8 @@ export const apiClient = axios.create({
 })
 
 apiClient.interceptors.request.use((config) => {
-  const token = tokenStore.get()
+  // 컴포넌트 밖이라 훅을 못 쓰므로 getState()로 현재 값을 바로 읽음
+  const token = useAuthStore.getState().accessToken
   if (token) config.headers.Authorization = `Bearer ${token}`
   return config
 })
